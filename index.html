@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Video Summary Demo</title>
+  <style>
+    :root {
+      --bg: #0b1020;
+      --panel: rgba(18, 24, 46, 0.88);
+      --panel-2: rgba(28, 36, 68, 0.9);
+      --text: #eef2ff;
+      --muted: #b6bfdc;
+      --line: rgba(255, 255, 255, 0.12);
+      --accent: #7c9cff;
+      --accent-2: #88f0d3;
+      --danger: #ff7b8b;
+      --shadow: 0 20px 50px rgba(0, 0, 0, 0.35);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      font-family: Inter, Pretendard, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(124, 156, 255, 0.18), transparent 30%),
+        radial-gradient(circle at top right, rgba(136, 240, 211, 0.15), transparent 28%),
+        linear-gradient(180deg, #060914 0%, #0c1224 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+
+    a { color: inherit; }
+
+    .container {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+    }
+
+    .hero {
+      padding: 64px 0 28px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px 14px;
+      border-radius: 999px;
+      background: rgba(124, 156, 255, 0.14);
+      border: 1px solid rgba(124, 156, 255, 0.28);
+      color: #dbe5ff;
+      font-size: 13px;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: clamp(34px, 7vw, 60px);
+      line-height: 1.05;
+      margin: 0;
+      letter-spacing: -0.03em;
+      max-width: 860px;
+    }
+
+    .hero p {
+      color: var(--muted);
+      font-size: clamp(16px, 2vw, 20px);
+      line-height: 1.7;
+      max-width: 760px;
+      margin-top: 18px;
+    }
+
+    .layout {
+      display: grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap: 22px;
+      padding: 24px 0 60px;
+    }
+
+    .card {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      backdrop-filter: blur(14px);
+    }
+
+    .section {
+      padding: 24px;
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+
+    .section-title h2 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: -0.02em;
+    }
+
+    .hint {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .dropzone {
+      border: 1.5px dashed rgba(255,255,255,0.2);
+      border-radius: 20px;
+      padding: 28px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01));
+      transition: 0.2s ease;
+    }
+
+    .dropzone.dragover {
+      border-color: var(--accent);
+      background: rgba(124, 156, 255, 0.09);
+      transform: translateY(-1px);
+    }
+
+    .dropzone strong {
+      display: block;
+      font-size: 19px;
+      margin-bottom: 8px;
+    }
+
+    .dropzone p {
+      margin: 0 0 16px;
+      color: var(--muted);
+      line-height: 1.6;
+    }
+
+    .row {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .input, .select, .textarea {
+      width: 100%;
+      background: rgba(255,255,255,0.04);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 14px;
+      padding: 14px 16px;
+      outline: none;
+      font-size: 15px;
+    }
+
+    .textarea {
+      min-height: 110px;
+      resize: vertical;
+    }
+
+    .input::placeholder, .textarea::placeholder {
+      color: #9ca6c9;
+    }
+
+    .button {
+      border: 0;
+      border-radius: 14px;
+      padding: 13px 18px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: 0.2s ease;
+    }
+
+    .button.primary {
+      background: linear-gradient(135deg, var(--accent), #a787ff);
+      color: white;
+    }
+
+    .button.secondary {
+      background: rgba(255,255,255,0.06);
+      color: var(--text);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+
+    .button:hover { transform: translateY(-1px); }
+    .button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+    }
+
+    .label {
+      display: block;
+      font-size: 14px;
+      color: #d6ddf8;
+      margin: 18px 0 8px;
+    }
+
+    .subtle-box {
+      margin-top: 18px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .status {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 14px 16px;
+      margin-top: 16px;
+      border-radius: 16px;
+      background: rgba(136, 240, 211, 0.08);
+      border: 1px solid rgba(136, 240, 211, 0.16);
+      color: #dffaf2;
+      font-size: 14px;
+    }
+
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--accent-2);
+      box-shadow: 0 0 0 6px rgba(136, 240, 211, 0.14);
+    }
+
+    .preview {
+      overflow: hidden;
+    }
+
+    .preview-top {
+      padding: 22px 24px 18px;
+      border-bottom: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(124,156,255,0.08), rgba(255,255,255,0));
+    }
+
+    .preview-title {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+
+    .preview-title h3 {
+      margin: 0;
+      font-size: 24px;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      border-radius: 999px;
+      padding: 8px 12px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      color: #d8def8;
+      font-size: 13px;
+    }
+
+    .preview-body {
+      padding: 22px 24px 24px;
+      display: grid;
+      gap: 16px;
+    }
+
+    .summary-main {
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .summary-main h4,
+    .timeline h4,
+    .keywords h4,
+    .meta h4 {
+      margin: 0 0 12px;
+      font-size: 16px;
+      color: #dfe6ff;
+    }
+
+    .summary-main p,
+    .meta p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.7;
+    }
+
+    .timeline-item {
+      display: grid;
+      grid-template-columns: 84px 1fr;
+      gap: 14px;
+      padding: 13px 0;
+      border-top: 1px solid rgba(255,255,255,0.08);
+    }
+
+    .timeline-item:first-child { border-top: 0; }
+
+    .time {
+      color: #a9bbff;
+      font-weight: 700;
+      font-size: 14px;
+    }
+
+    .timeline-item p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 14px;
+    }
+
+    .keyword-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .keyword {
+      padding: 9px 12px;
+      border-radius: 999px;
+      background: rgba(124, 156, 255, 0.12);
+      border: 1px solid rgba(124, 156, 255, 0.16);
+      color: #dce6ff;
+      font-size: 13px;
+    }
+
+    .meta {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .meta-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px;
+      padding: 16px;
+    }
+
+    .meta-card strong {
+      display: block;
+      font-size: 22px;
+      margin-bottom: 6px;
+    }
+
+    .meta-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer {
+      padding: 0 0 48px;
+      color: #8f9ac4;
+      font-size: 13px;
+    }
+
+    .error {
+      display: none;
+      margin-top: 14px;
+      padding: 12px 14px;
+      border-radius: 14px;
+      background: rgba(255, 123, 139, 0.08);
+      border: 1px solid rgba(255, 123, 139, 0.16);
+      color: #ffd6dc;
+      font-size: 14px;
+    }
+
+    code.inline {
+      background: rgba(255,255,255,0.07);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 8px;
+      padding: 2px 8px;
+      font-size: 13px;
+    }
+
+    @media (max-width: 960px) {
+      .layout {
+        grid-template-columns: 1fr;
+      }
+      .meta {
+        grid-template-columns: 1fr;
+      }
+      .grid-2 {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <section class="hero">
+      <div class="badge">Docker LLM + GitHub Pages Demo</div>
+      <h1>비디오를 넣으면 핵심 요약과 구간별 내용을 바로 보여주는 데모 홈페이지</h1>
+      <p>
+        이 페이지는 GitHub Pages에 올릴 수 있는 정적 프론트엔드 예시입니다.
+        실제 비디오 처리와 요약은 Docker 서버 API가 담당하고, 여기서는 결과만 보기 좋게 렌더링합니다.
+      </p>
+    </section>
+
+    <section class="layout">
+      <div class="card section">
+        <div class="section-title">
+          <h2>입력</h2>
+          <span class="hint">파일 업로드 또는 영상 URL</span>
+        </div>
+
+        <div id="dropzone" class="dropzone">
+          <strong>영상 파일 드래그 앤 드롭</strong>
+          <p>또는 아래 버튼으로 파일을 선택하세요. 현재는 데모 UI이며, 실제 업로드는 Docker 백엔드 API와 연결하면 됩니다.</p>
+          <div class="row">
+            <input id="fileInput" type="file" accept="video/*" hidden />
+            <button class="button secondary" id="chooseFileBtn">파일 선택</button>
+            <button class="button secondary" id="loadExampleBtn">예시 결과 불러오기</button>
+          </div>
+          <div id="selectedFile" class="subtle-box">선택된 파일이 없습니다.</div>
+        </div>
+
+        <label class="label" for="videoUrl">또는 영상 URL</label>
+        <input class="input" id="videoUrl" type="text" placeholder="예: https://www.youtube.com/watch?v=..." />
+
+        <div class="grid-2">
+          <div>
+            <label class="label" for="summaryType">요약 스타일</label>
+            <select class="select" id="summaryType">
+              <option value="brief">짧은 요약</option>
+              <option value="detailed" selected>자세한 요약</option>
+              <option value="bullets">핵심 bullet 요약</option>
+            </select>
+          </div>
+          <div>
+            <label class="label" for="language">출력 언어</label>
+            <select class="select" id="language">
+              <option value="ko" selected>한국어</option>
+              <option value="en">English</option>
+            </select>
+          </div>
+        </div>
+
+        <label class="label" for="extraPrompt">추가 지시사항</label>
+        <textarea class="textarea" id="extraPrompt" placeholder="예: 발표 목적, 실험 세팅, 결론 위주로 요약해줘"></textarea>
+
+        <div class="row" style="margin-top: 18px;">
+          <button class="button primary" id="generateBtn">요약 요청</button>
+          <button class="button secondary" id="resetBtn">초기화</button>
+        </div>
+
+        <div class="status" id="statusBox">
+          <div class="dot"></div>
+          <span id="statusText">백엔드 연결 전 상태입니다. 예시 결과를 먼저 확인할 수 있습니다.</span>
+        </div>
+
+        <div class="error" id="errorBox"></div>
+
+        <div class="subtle-box">
+          <strong style="display:block; margin-bottom:8px; color:#eef2ff;">연결 포인트</strong>
+          GitHub Pages에서는 서버 코드를 실행하지 않으므로,
+          프론트는 <code class="inline">fetch()</code>로 Docker 서버의 API에 요청해야 합니다.
+          예시는 아래와 같습니다.<br /><br />
+          <code class="inline">POST /api/summarize</code><br />
+          <code class="inline">GET /api/job/:id</code>
+        </div>
+      </div>
+
+      <div class="card preview">
+        <div class="preview-top">
+          <div class="preview-title">
+            <h3>요약 결과</h3>
+            <span class="pill" id="resultState">demo mode</span>
+          </div>
+          <div class="hint" id="videoTitle">아직 처리된 영상이 없습니다.</div>
+        </div>
+
+        <div class="preview-body">
+          <div class="summary-main">
+            <h4>전체 요약</h4>
+            <p id="mainSummary">오른쪽 영역에는 Docker 서버가 반환한 요약 결과를 표시합니다. 지금은 데모 문구가 들어 있습니다.</p>
+          </div>
+
+          <div class="timeline">
+            <h4>구간별 요약</h4>
+            <div id="timelineList">
+              <div class="timeline-item">
+                <div class="time">00:00</div>
+                <p>도입부 설명이 여기에 표시됩니다.</p>
+              </div>
+              <div class="timeline-item">
+                <div class="time">01:20</div>
+                <p>핵심 장면 또는 발표 내용 요약이 시간대별로 정리됩니다.</p>
+              </div>
+              <div class="timeline-item">
+                <div class="time">03:45</div>
+                <p>마지막 결론이나 액션 아이템 등을 보여줄 수 있습니다.</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="keywords">
+            <h4>키워드</h4>
+            <div class="keyword-list" id="keywordList">
+              <span class="keyword">demo</span>
+              <span class="keyword">video summary</span>
+              <span class="keyword">docker llm</span>
+              <span class="keyword">github pages</span>
+            </div>
+          </div>
+
+          <div class="meta">
+            <div class="meta-card">
+              <strong id="durationValue">-</strong>
+              <span>영상 길이</span>
+            </div>
+            <div class="meta-card">
+              <strong id="languageValue">-</strong>
+              <span>감지 언어</span>
+            </div>
+            <div class="meta-card">
+              <strong id="modelValue">-</strong>
+              <span>사용 모델</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      GitHub Pages용 정적 데모 페이지 예시입니다. 실제 배포 시에는 CORS, 업로드 방식, 진행 상태 polling, 에러 처리, 대용량 파일 정책을 함께 고려하세요.
+    </footer>
+  </div>
+
+  <script>
+    const API_BASE_URL = "http://localhost:8000";
+    let selectedFile = null;
+
+    const elements = {
+      dropzone: document.getElementById("dropzone"),
+      fileInput: document.getElementById("fileInput"),
+      chooseFileBtn: document.getElementById("chooseFileBtn"),
+      loadExampleBtn: document.getElementById("loadExampleBtn"),
+      selectedFile: document.getElementById("selectedFile"),
+      videoUrl: document.getElementById("videoUrl"),
+      summaryType: document.getElementById("summaryType"),
+      language: document.getElementById("language"),
+      extraPrompt: document.getElementById("extraPrompt"),
+      generateBtn: document.getElementById("generateBtn"),
+      resetBtn: document.getElementById("resetBtn"),
+      statusText: document.getElementById("statusText"),
+      errorBox: document.getElementById("errorBox"),
+      resultState: document.getElementById("resultState"),
+      videoTitle: document.getElementById("videoTitle"),
+      mainSummary: document.getElementById("mainSummary"),
+      timelineList: document.getElementById("timelineList"),
+      keywordList: document.getElementById("keywordList"),
+      durationValue: document.getElementById("durationValue"),
+      languageValue: document.getElementById("languageValue"),
+      modelValue: document.getElementById("modelValue")
+    };
+
+    const exampleResult = {
+      title: "CV 발표 데모 영상",
+      status: "completed",
+      summary: "이 영상은 프로젝트 개요, 문제 정의, 방법론, 실험 결과를 순차적으로 설명합니다. 발표자는 기존 접근의 한계를 짚은 뒤 제안 방법의 핵심 아이디어와 정량적 개선 결과를 요약하며, 마지막에는 향후 확장 가능성을 제시합니다.",
+      timeline: [
+        { time: "00:00", text: "발표 주제와 전체 문제 설정을 소개합니다." },
+        { time: "01:18", text: "기존 방식의 한계와 제안 방법의 필요성을 설명합니다." },
+        { time: "03:05", text: "모델 구조와 핵심 모듈이 어떻게 동작하는지 정리합니다." },
+        { time: "05:42", text: "실험 결과에서 성능 향상과 정성적 예시를 보여줍니다." },
+        { time: "07:10", text: "한계점과 향후 연구 방향을 간단히 언급하며 마무리합니다." }
+      ],
+      keywords: ["발표", "문제정의", "방법론", "실험결과", "향후연구"],
+      duration: "08:02",
+      detected_language: "ko",
+      model: "whisper + local llm"
+    };
+
+    function setStatus(message) {
+      elements.statusText.textContent = message;
+    }
+
+    function showError(message) {
+      elements.errorBox.style.display = "block";
+      elements.errorBox.textContent = message;
+    }
+
+    function clearError() {
+      elements.errorBox.style.display = "none";
+      elements.errorBox.textContent = "";
+    }
+
+    function renderResult(result) {
+      elements.resultState.textContent = result.status || "completed";
+      elements.videoTitle.textContent = result.title || "제목 없음";
+      elements.mainSummary.textContent = result.summary || "요약 결과가 없습니다.";
+      elements.durationValue.textContent = result.duration || "-";
+      elements.languageValue.textContent = result.detected_language || "-";
+      elements.modelValue.textContent = result.model || "-";
+
+      elements.timelineList.innerHTML = (result.timeline || []).map(item => `
+        <div class="timeline-item">
+          <div class="time">${item.time}</div>
+          <p>${item.text}</p>
+        </div>
+      `).join("") || `
+        <div class="timeline-item">
+          <div class="time">-</div>
+          <p>구간별 요약이 없습니다.</p>
+        </div>
+      `;
+
+      elements.keywordList.innerHTML = (result.keywords || []).map(keyword => `
+        <span class="keyword">${keyword}</span>
+      `).join("") || `<span class="keyword">no keywords</span>`;
+    }
+
+    function resetForm() {
+      selectedFile = null;
+      elements.fileInput.value = "";
+      elements.videoUrl.value = "";
+      elements.extraPrompt.value = "";
+      elements.selectedFile.textContent = "선택된 파일이 없습니다.";
+      setStatus("백엔드 연결 전 상태입니다. 예시 결과를 먼저 확인할 수 있습니다.");
+      clearError();
+    }
+
+    function handleSelectedFile(file) {
+      selectedFile = file;
+      elements.selectedFile.textContent = `선택된 파일: ${file.name} (${Math.round(file.size / 1024 / 1024 * 10) / 10} MB)`;
+      setStatus("파일이 선택되었습니다. 요약 요청 버튼을 누르면 API 호출을 시작합니다.");
+      clearError();
+    }
+
+    elements.chooseFileBtn.addEventListener("click", () => elements.fileInput.click());
+    elements.fileInput.addEventListener("change", (e) => {
+      const file = e.target.files?.[0];
+      if (file) handleSelectedFile(file);
+    });
+
+    ["dragenter", "dragover"].forEach(eventName => {
+      elements.dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        elements.dropzone.classList.add("dragover");
+      });
+    });
+
+    ["dragleave", "drop"].forEach(eventName => {
+      elements.dropzone.addEventListener(eventName, (e) => {
+        e.preventDefault();
+        elements.dropzone.classList.remove("dragover");
+      });
+    });
+
+    elements.dropzone.addEventListener("drop", (e) => {
+      const file = e.dataTransfer.files?.[0];
+      if (file && file.type.startsWith("video/")) {
+        handleSelectedFile(file);
+      } else {
+        showError("비디오 파일만 업로드할 수 있습니다.");
+      }
+    });
+
+    elements.loadExampleBtn.addEventListener("click", () => {
+      renderResult(exampleResult);
+      setStatus("예시 결과를 불러왔습니다.");
+      clearError();
+    });
+
+    elements.resetBtn.addEventListener("click", resetForm);
+
+    elements.generateBtn.addEventListener("click", async () => {
+      clearError();
+
+      if (!selectedFile && !elements.videoUrl.value.trim()) {
+        showError("비디오 파일 또는 영상 URL 중 하나는 입력해야 합니다.");
+        return;
+      }
+
+      setStatus("요약 요청 중입니다... 현재는 샘플 fetch 코드가 포함되어 있습니다.");
+      elements.generateBtn.disabled = true;
+      elements.resultState.textContent = "processing";
+
+      try {
+        // 실제 연결 예시 1: 파일 업로드
+        if (selectedFile) {
+          const formData = new FormData();
+          formData.append("video", selectedFile);
+          formData.append("summary_type", elements.summaryType.value);
+          formData.append("language", elements.language.value);
+          formData.append("extra_prompt", elements.extraPrompt.value);
+
+          // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
+          // const response = await fetch(`${API_BASE_URL}/api/summarize`, {
+          //   method: "POST",
+          //   body: formData
+          // });
+          // if (!response.ok) throw new Error("요약 요청에 실패했습니다.");
+          // const result = await response.json();
+          // renderResult(result);
+
+          await new Promise(resolve => setTimeout(resolve, 900));
+          renderResult({
+            ...exampleResult,
+            title: selectedFile.name,
+            status: "completed",
+            model: "docker-backend placeholder"
+          });
+          setStatus("샘플 결과를 표시했습니다. 실제 백엔드 연결 시 fetch 주석을 해제하면 됩니다.");
+        }
+        // 실제 연결 예시 2: URL 입력
+        else {
+          const payload = {
+            video_url: elements.videoUrl.value.trim(),
+            summary_type: elements.summaryType.value,
+            language: elements.language.value,
+            extra_prompt: elements.extraPrompt.value
+          };
+
+          // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
+          // const response = await fetch(`${API_BASE_URL}/api/summarize-url`, {
+          //   method: "POST",
+          //   headers: { "Content-Type": "application/json" },
+          //   body: JSON.stringify(payload)
+          // });
+          // if (!response.ok) throw new Error("URL 요약 요청에 실패했습니다.");
+          // const result = await response.json();
+          // renderResult(result);
+
+          await new Promise(resolve => setTimeout(resolve, 900));
+          renderResult({
+            ...exampleResult,
+            title: payload.video_url,
+            status: "completed",
+            model: "docker-backend placeholder"
+          });
+          setStatus("샘플 결과를 표시했습니다. 실제 백엔드 연결 시 fetch 주석을 해제하면 됩니다.");
+        }
+      } catch (error) {
+        console.error(error);
+        showError(error.message || "알 수 없는 오류가 발생했습니다.");
+        elements.resultState.textContent = "failed";
+        setStatus("에러가 발생했습니다. API 주소, CORS, 서버 상태를 확인하세요.");
+      } finally {
+        elements.generateBtn.disabled = false;
+      }
+    });
+
+    renderResult(exampleResult);
+  </script>
+</body>
+</html>
