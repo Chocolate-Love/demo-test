@@ -393,6 +393,40 @@
         grid-template-columns: 1fr;
       }
     }
+    .image-results {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 16px;
+    }
+    .image-panel {
+      background: var(--panel-2);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    
+    .image-frame {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      overflow: hidden;
+      border-radius: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    
+    .image-frame img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    
+    .image-caption {
+      margin: 10px 0 0;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.6;
+    }
   </style>
 </head>
 <body>
@@ -527,6 +561,35 @@
               <span>사용 모델</span>
             </div>
           </div>
+          <div class="image-results">
+  <div class="image-panel">
+    <h4>객체 검출 결과</h4>
+    <div class="image-frame">
+      <img
+        id="detectedImage"
+        src="https://placehold.co/800x450?text=Object+Detection+Preview"
+        alt="객체 검출 결과"
+      />
+    </div>
+    <p class="image-caption" id="detectedCaption">
+      객체 검출 결과 이미지가 여기에 표시됩니다.
+    </p>
+  </div>
+
+  <div class="image-panel">
+    <h4>생성 이미지 결과</h4>
+    <div class="image-frame">
+      <img
+        id="generatedImage"
+        src="https://placehold.co/800x450?text=Generated+Image+Preview"
+        alt="생성 이미지 결과"
+      />
+    </div>
+    <p class="image-caption" id="generatedCaption">
+      생성 이미지 결과가 여기에 표시됩니다.
+    </p>
+  </div>
+</div>
         </div>
       </div>
     </section>
@@ -561,7 +624,11 @@
       keywordList: document.getElementById("keywordList"),
       durationValue: document.getElementById("durationValue"),
       languageValue: document.getElementById("languageValue"),
-      modelValue: document.getElementById("modelValue")
+      modelValue: document.getElementById("modelValue"),
+      detectedImage: document.getElementById("detectedImage"),
+      generatedImage: document.getElementById("generatedImage"),
+      detectedCaption: document.getElementById("detectedCaption"),
+      generatedCaption: document.getElementById("generatedCaption"),
     };
 
     const exampleResult = {
