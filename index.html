@@ -427,6 +427,13 @@
       font-size: 14px;
       line-height: 1.6;
     }
+    .model-config {
+  margin-top: 8px;
+  padding: 18px;
+  border-radius: 18px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.08);
+}
   </style>
 </head>
 <body>
@@ -478,6 +485,44 @@
             </select>
           </div>
         </div>
+        <div class="model-config">
+  <div class="section-title" style="margin-top: 20px; margin-bottom: 10px;">
+    <h2 style="font-size: 18px; margin: 0;">모델 선택</h2>
+    <span class="hint">데모할 모델 조합을 선택하세요</span>
+  </div>
+
+      <div class="grid-2">
+        <div>
+          <label class="label" for="summaryModel">요약 모델</label>
+          <select class="select" id="summaryModel">
+            <option value="gpt-4.1">GPT-4.1</option>
+            <option value="llava-1.6-7b" selected>LLaVA 1.6 7B</option>
+            <option value="qwen2.5-vl-7b">Qwen2.5-VL 7B</option>
+            <option value="gemma-3-12b">Gemma 3 12B</option>
+          </select>
+        </div>
+    
+        <div>
+          <label class="label" for="detectionModel">객체 검출 모델</label>
+          <select class="select" id="detectionModel">
+            <option value="yolov8n" selected>YOLOv8n</option>
+            <option value="yolov8x">YOLOv8x</option>
+            <option value="grounding-dino">Grounding DINO</option>
+            <option value="owl-vit">OWL-ViT</option>
+          </select>
+        </div>
+      </div>
+    
+      <div style="margin-top: 14px;">
+        <label class="label" for="generationModel">이미지 생성 모델</label>
+        <select class="select" id="generationModel">
+          <option value="sdxl" selected>Stable Diffusion XL</option>
+          <option value="flux-dev">FLUX-dev</option>
+          <option value="flux-schnell">FLUX-schnell</option>
+          <option value="playground-v2.5">Playground v2.5</option>
+        </select>
+      </div>
+    </div>
 
         <label class="label" for="extraPrompt">추가 지시사항</label>
         <textarea class="textarea" id="extraPrompt" placeholder="예: 발표 목적, 실험 세팅, 결론 위주로 요약해줘"></textarea>
@@ -628,7 +673,9 @@
       detectedImage: document.getElementById("detectedImage"),
       generatedImage: document.getElementById("generatedImage"),
       detectedCaption: document.getElementById("detectedCaption"),
-      generatedCaption: document.getElementById("generatedCaption"),
+      generatedCaption: document.getElementById("generatedCaption"),summaryModel: document.getElementById("summaryModel"),
+      detectionModel: document.getElementById("detectionModel"),
+      generationModel: document.getElementById("generationModel"),
     };
 
     const exampleResult = {
