@@ -819,22 +819,22 @@
           };
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
-          // const response = await fetch(`${API_BASE_URL}/api/summarize-url`, {
-          //   method: "POST",
-          //   headers: { "Content-Type": "application/json" },
-          //   body: JSON.stringify(payload)
-          // });
-          // if (!response.ok) throw new Error("URL 요약 요청에 실패했습니다.");
-          // const result = await response.json();
-          // renderResult(result);
-
-          await new Promise(resolve => setTimeout(resolve, 900));
-          renderResult({
-            ...exampleResult,
-            title: payload.video_url,
-            status: "completed",
-            model: "docker-backend placeholder"
+          const response = await fetch(`${API_BASE_URL}/api/summarize-url`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
           });
+          if (!response.ok) throw new Error("URL 요약 요청에 실패했습니다.");
+          const result = await response.json();
+          renderResult(result);
+
+          // await new Promise(resolve => setTimeout(resolve, 900));
+          // renderResult({
+          //   ...exampleResult,
+          //   title: payload.video_url,
+          //   status: "completed",
+          //   model: "docker-backend placeholder"
+          // });
           setStatus("샘플 결과를 표시했습니다. 실제 백엔드 연결 시 fetch 주석을 해제하면 됩니다.");
         }
       } catch (error) {
