@@ -789,21 +789,21 @@
           formData.append("extra_prompt", elements.extraPrompt.value);
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
-          // const response = await fetch(`${API_BASE_URL}/api/summarize`, {
-          //   method: "POST",
-          //   body: formData
-          // });
-          // if (!response.ok) throw new Error("요약 요청에 실패했습니다.");
-          // const result = await response.json();
-          // renderResult(result);
-
-          await new Promise(resolve => setTimeout(resolve, 900));
-          renderResult({
-            ...exampleResult,
-            title: selectedFile.name,
-            status: "completed",
-            model: "docker-backend placeholder"
+          const response = await fetch(`${API_BASE_URL}/api/summarize`, {
+            method: "POST",
+            body: formData
           });
+          if (!response.ok) throw new Error("요약 요청에 실패했습니다.");
+          const result = await response.json();
+          renderResult(result);
+
+          // await new Promise(resolve => setTimeout(resolve, 900));
+          // renderResult({
+          //   ...exampleResult,
+          //   title: selectedFile.name,
+          //   status: "completed",
+          //   model: "docker-backend placeholder"
+          // });
           setStatus("샘플 결과를 표시했습니다. 실제 백엔드 연결 시 fetch 주석을 해제하면 됩니다.");
         }
         // 실제 연결 예시 2: URL 입력
@@ -812,7 +812,10 @@
             video_url: elements.videoUrl.value.trim(),
             summary_type: elements.summaryType.value,
             language: elements.language.value,
-            extra_prompt: elements.extraPrompt.value
+            extra_prompt: elements.extraPrompt.value,
+            summary_model: elements.summaryModel.value,
+            detection_model: elements.detectionModel.value,
+            generation_model: elements.generationModel.value
           };
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
