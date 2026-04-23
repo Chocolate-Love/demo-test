@@ -787,13 +787,20 @@
           formData.append("summary_type", elements.summaryType.value);
           formData.append("language", elements.language.value);
           formData.append("extra_prompt", elements.extraPrompt.value);
+          formData.append("summary_model", elements.summaryModel.value);
+          formData.append("detection_model", elements.detectionModel.value);
+          formData.append("generation_model", elements.generationModel.value);
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
           const response = await fetch(`${API_BASE_URL}/api/summarize`, {
             method: "POST",
             body: formData
           });
-          if (!response.ok) throw new Error("요약 요청에 실패했습니다.");
+          if (!response.ok) {
+            const errorText = await response.text();
+            console.error("Server error:", errorText);
+            throw new Error(`요청 실패: ${errorText}`);
+          }
           const result = await response.json();
           renderResult(result);
 
