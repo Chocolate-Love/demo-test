@@ -793,7 +793,9 @@
           formData.append("summary_type", elements.summaryType.value);
           formData.append("language", elements.language.value);
           formData.append("extra_prompt", elements.extraPrompt.value);
-          formData.append("summary_model", elements.summaryModel.value);
+          formData.append("task1", elements.summaryModel?.value || "llava-1.6-7b");
+          formData.append("task2", elements.detectionModel?.value || "yolov8n");
+          formData.append("task3", elements.generationModel?.value || "sdxl");
 
           for (const pair of formData.entries()) {
             console.log(pair[0], pair[1]);
@@ -829,6 +831,9 @@
             language: elements.language.value,
             extra_prompt: elements.extraPrompt.value,
             summary_model: elements.summaryModel.value,
+            task1: elements.summaryModel?.value || "llava-1.6-7b",
+            task2: elements.detectionModel?.value || "yolov8n",
+            task3: elements.generationModel?.value || "sdxl"
           };
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
