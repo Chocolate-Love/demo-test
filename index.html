@@ -794,8 +794,6 @@
           formData.append("language", elements.language.value);
           formData.append("extra_prompt", elements.extraPrompt.value);
           formData.append("summary_model", elements.summaryModel.value);
-          formData.append("detection_model", elements.detectionModel.value);
-          formData.append("generation_model", elements.generationModel.value);
 
           for (const pair of formData.entries()) {
             console.log(pair[0], pair[1]);
@@ -831,8 +829,6 @@
             language: elements.language.value,
             extra_prompt: elements.extraPrompt.value,
             summary_model: elements.summaryModel.value,
-            detection_model: elements.detectionModel.value,
-            generation_model: elements.generationModel.value
           };
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
