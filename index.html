@@ -782,6 +782,12 @@
       try {
         // 실제 연결 예시 1: 파일 업로드
         if (selectedFile) {
+          console.log("Uploading file...");
+          console.log("selectedFile:", selectedFile);
+          console.log("file name:", selectedFile?.name);
+          console.log("file size:", selectedFile?.size);
+          console.log("file type:", selectedFile?.type);
+          
           const formData = new FormData();
           formData.append("video", selectedFile);
           formData.append("summary_type", elements.summaryType.value);
@@ -790,6 +796,10 @@
           formData.append("summary_model", elements.summaryModel.value);
           formData.append("detection_model", elements.detectionModel.value);
           formData.append("generation_model", elements.generationModel.value);
+
+          for (const pair of formData.entries()) {
+            console.log(pair[0], pair[1]);
+          }
 
           // 아래 fetch는 실제 서버 연결 시 주석 해제해서 사용하세요.
           const response = await fetch(`${API_BASE_URL}/api/summarize`, {
